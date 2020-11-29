@@ -3,4 +3,4 @@
 
 # dont ignore this
 !./bibgraf/bibaux.o
-!.bibaux_at.o
+!./atividade2/bibaux_at.o
