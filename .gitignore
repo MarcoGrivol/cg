@@ -2,5 +2,5 @@
 *.o
 
 # dont ignore this
-!./bibgraf/bibaux.o
-!./atividade2/bibaux_at.o
+!/bibgraf/bibaux.o
+!/atividade2/bibaux_at.o
