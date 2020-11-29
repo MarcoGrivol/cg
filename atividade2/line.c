@@ -25,11 +25,42 @@ int DrawLine(point *p1, point *p2, window *win, viewport *port, bufferdevice *de
     pd2->y = aux;
   }
 
-  i = pd1->x;
   j = pd1->y;
+  i = pd1->x;
 
   // Agora é com vocês! Completem a função! O resultado deve ser similar ao encontrado quando o programa exemplo1,
   // que está disponível na seção Biblioteca Gráfica, é executado.
-
+  int index;
+  if (pd1->x == pd2->x) // linha vertical
+  {
+    i = pd1->x;
+    if (pd1->y < pd2->y) // do ponto1 ao ponto2
+    {
+      for (j = pd1->y; j < pd2->y; j++)
+      {
+        index = (dev->MaxY - j) * dev->MaxX + i;
+        dev->buffer[index] = color;
+      }
+    }
+    else if (pd1->y > pd2->y) // do ponto2 ao ponto1
+    {
+      for (j = pd2->y; j < pd1->y; j++)
+      {
+        index = (dev->MaxY - j) * dev->MaxX + i;
+        dev->buffer[index] = color;
+      }
+    }
+  }
+  else // reta inclinacao positiva ou negativa (ponto1 ao ponto2 garantido por swap)
+  {
+    a = (pd2->y - pd1->y) / (pd2->x - pd1->x);
+    b = pd1->y - a * pd1->x; 
+    for (i = pd1->x; i < pd2->x; i++)
+    {
+      j = a * i + b;
+      index = (dev->MaxY - j) * dev->MaxX + i;
+      dev->buffer[index] = color;
+    }
+  }
   return 0;
 }
