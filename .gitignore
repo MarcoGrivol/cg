@@ -1,1 +1,6 @@
 *.exe
+*.o
+
+# dont ignore this
+!./bibgraf/bibaux.o
+!.bibaux_at.o
