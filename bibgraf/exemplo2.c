@@ -21,7 +21,7 @@ int main(int argc, char ** argv) {
   
   palheta = CreatePalette(5);  // Cria um colormap (lookup table) com 5 cores
   SetColor(0,0,0,palheta);
-  SetColor(1,0,0,palheta);
+   SetColor(1,0,0,palheta);
   SetColor(0,1,0,palheta);
   SetColor(0,0,1,palheta);
   SetColor(1,1,1,palheta);
@@ -39,15 +39,17 @@ int main(int argc, char ** argv) {
   SetObject(SetPoint(-3.0,-6.0,1,1), poligono1);
   SetObject(SetPoint(-6.0,-9.0,1,1), poligono1);
   
-  SetObject(SetPoint(-6.0,-2.0,1,3), poligono2);
-  SetObject(SetPoint(-1.0,-2.0,1,3), poligono2);
-  SetObject(SetPoint(-1.0,-6.0,1,3), poligono2);
-  SetObject(SetPoint(-6.0,-6.0,1,3), poligono2);
+  SetObject(SetPoint(-6.0,-2.0,1,1), poligono2);
+  SetObject(SetPoint(-1.0,-2.0,1,1), poligono2);
+  SetObject(SetPoint(-1.0,-6.0,1,1), poligono2);
+  SetObject(SetPoint(-6.0,-6.0,1,1), poligono2);
   
   janela = CreateWindow(-10.0,-10.0,0.0,0.0); // cria uma janela de visualização (coordenadas no SRU)
 
   porta1 = CreateViewPort(30, 60, 347, 220); // Cria uma viewport
   porta2 = CreateViewPort(370, 260, 503, 407); // Cria uma segunda viewport
+  printf("monitor=(%d, %d)\n", monitor->MaxX, monitor->MaxY);
+  printf("viewmin=(%d, %d), viewmax=(%d, %d)\n", porta2->xmin, porta2->ymin, porta2->xmax, porta2->ymax);
 
   DrawObject(poligono1,janela,porta1,monitor,3);
   DrawObject(poligono2,janela,porta2,monitor,2);
