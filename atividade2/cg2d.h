@@ -21,90 +21,98 @@
    o plano como referência para o mundo */
 
 // Variáveis globais que determinam o tamanho do Universo no SRU
-float XWMin, YWMin, XWMax, YWMax;
+// float XWMin, YWMin, XWMax, YWMax;
 
 // Janela de visualização definida no SRU
-typedef struct Window {
+typedef struct Window
+{
   float xmin,
-        xmax,
-        ymin,
-        ymax;
-        } window;
- 
-// Porta de visualização (viewport) definida no SRD     
-typedef struct ViewPort {
+      xmax,
+      ymin,
+      ymax;
+} window;
+
+// Porta de visualização (viewport) definida no SRD
+typedef struct ViewPort
+{
   int xmin,
       ymin,
       xmax,
       ymax;
-      } viewport;
+} viewport;
 
-// Estrutura de dados para um ponto no plano (SRU 2D) com 
+// Estrutura de dados para um ponto no plano (SRU 2D) com
 // uma componente homogênea (w != 0)
-typedef struct HPoint2D {
+typedef struct HPoint2D
+{
   float x,
-        y,
-        w;  // componente homogênea que será discutida em aula futura!!!
-  int   color;
-        } point;
- 
-// Estrutura de dados para um objeto (polígono) no 
-// plano (SRU 2D)     
-typedef struct Object2D {
+      y,
+      w; // componente homogênea que será discutida em aula futura!!!
+  int color;
+} point;
+
+// Estrutura de dados para um objeto (polígono) no
+// plano (SRU 2D)
+typedef struct Object2D
+{
   int numbers_of_points;
-  point * points;
-  } object;
+  point *points;
+} object;
 
-// Estrutura de dados para uma componente de cor no 
+// Estrutura de dados para uma componente de cor no
 // modelo aditivo RGB
-typedef struct Color {
+typedef struct Color
+{
   float red,
-        green,
-        blue;
-        } ColorValues;
-  
-// Paleta de cores (colormap)    
-typedef struct Palette {
-  int numbers_of_colors;
-  ColorValues * colors;
-  } palette;
+      green,
+      blue;
+} ColorValues;
 
-// Estrutura de dados para uma grade bidimensional de 
+// Paleta de cores (colormap)
+typedef struct Palette
+{
+  int numbers_of_colors;
+  ColorValues *colors;
+} palette;
+
+// Estrutura de dados para uma grade bidimensional de
 // entradas que corresponde ao SRD
-typedef struct Buffer {
+typedef struct Buffer
+{
   int MaxX,
       MaxY;
-  int * buffer;
-  } bufferdevice;
-  
+  int *buffer;
+} bufferdevice;
+
 // Estrutura para uma matriz homogênea para operações
 // lineares no plano - SRU
-typedef struct HMatrix2D {
+typedef struct HMatrix2D
+{
   float a11, a12, a13,
-        a21, a22, a23,
-        a31, a32, a33;
-        } matrix;
+      a21, a22, a23,
+      a31, a32, a33;
+} matrix;
 
 /* Determina os limites do mundo */
 void SetWorld(float, float, float, float);
 
 /* cria pontos e objetos no mundo */
-point * SetPoint(float, float, float, int);
-object * CreateObject(int);
+point *SetPoint(float, float, float, int);
+object *CreateObject(int);
 int SetObject(point *, object *);
 
 /* Funções para criar e gerenciar uma 
    paleta e cores */
-palette * CreatePalette(int);
+palette *CreatePalette(int);
 int SetColor(float, float, float, palette *);
-ColorValues * GetColor(int, palette *);
+ColorValues *GetColor(int, palette *);
 
 /* Sistemas de referências, janelas e viewports */
-window * CreateWindow(float, float, float, float);
-viewport * CreateViewPort(int, int, int, int);
-point * Sru2Srn(point *, window *);
-point * Srn2Srd(point *, viewport *);
-bufferdevice * CreateBuffer(int, int);
+window *CreateWindow(float, float, float, float);
+viewport *CreateViewPort(int, int, int, int);
+point *Sru2Srn(point *, window *);
+point *Srn2Srd(point *, viewport *);
+bufferdevice *CreateBuffer(int, int);
 
 /* Funções para conversão matricial e preenchimento de objetos */
 int DrawViewPort(viewport *, bufferdevice *, int);
@@ -116,9 +124,5 @@ int Dump2X(bufferdevice *, palette *);
 
 /* Funções auxiliares */
 int InWin(point *, window *);
-point * InterX(point *, point *, float);
-point * InterY(point *, point *, float);
-
-
-
-
+point *InterX(point *, point *, float);
+point *InterY(point *, point *, float);

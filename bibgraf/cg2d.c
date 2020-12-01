@@ -207,19 +207,17 @@ int DrawObject(object *ob, window *win, viewport *port, bufferdevice *dev, int c
     if ((InWin(p1, win)) && (InWin(p2, win)))
     {
       // Cuidado! A função DrawLine() foi escrita de modo a trabalhar apenas se chamada pela DrawObject()
-      // DrawLine(p1, p2, win, port, dev, color);
-
-      float a, b, aux;
-      int i, j;
+      float a, b;
+      int i, j, aux;
       point *pn1, *pd1, *pn2, *pd2;
 
       pn1 = Sru2Srn(p1, win);
-      pd1 = Srn2Srd(pn1, port);
+      pd1 = Srn2Srd(pn1, dev);
       pn2 = Sru2Srn(p2, win);
-      pd2 = Srn2Srd(pn2, port);
+      pd2 = Srn2Srd(pn2, dev);
 
       if (pd1->x > pd2->x)
-      { // O swap entre os pontos pode ser necessário. Por quê?
+      {
         aux = pd1->x;
         pd1->x = pd2->x;
         pd2->x = aux;
@@ -228,84 +226,47 @@ int DrawObject(object *ob, window *win, viewport *port, bufferdevice *dev, int c
         pd2->y = aux;
       }
 
-      j = pd1->y;
       i = pd1->x;
+      j = pd1->y;
 
-      // // Agora é com vocês! Completem a função! O resultado deve ser similar ao encontrado quando o programa exemplo1,
-      // // que está disponível na seção Biblioteca Gráfica, é executado.
+      if (pd1->x == pd2->x)
+      {
+        while (j < pd2->y)
+        {
+          dev->buffer[(dev->MaxY - j - 1) * dev->MaxX + i] = color;
+          j++;
+        }
+      }
+      else
+      {
+        a = (pd2->y - pd1->y) / (pd2->x - pd1->x);
+        b = pd1->y - a * pd1->x;
+        while (i < pd2->x)
+        {
+          dev->buffer[(dev->MaxY - j - 1) * dev->MaxX + i] = color;
+          aux = j;
+          j = round(a * (++i) + b);
 
-   if (pd1->x == pd2->x) {
-     while (j < pd2->y) {
-       dev->buffer[(dev->MaxY - j - 1) * dev->MaxX + i] = color;
-       j++;
-       }
-     }
-   else {
-     a = (pd2->y - pd1->y)/(pd2->x - pd1->x);
-     b = pd1->y - a*pd1->x;
-     while (i < pd2->x) {
-       dev->buffer[(dev->MaxY - j - 1) * dev->MaxX + i] = color;
-       aux = j;
-       j = round(a*(++i) + b);
-       
-       if (j > aux) {
-	 while (aux < j) {
-	   dev->buffer[(dev->MaxY - (int)aux - 1) * dev->MaxX + i] = color; 
-	   aux++;
-	   }
-         }
-       if (j < aux) {
-	 while (aux > j) { 
-	   dev->buffer[(dev->MaxY - (int)aux - 1) * dev->MaxX + i] = color;
-	   aux--;
-	   }
-         }
-        
-       }
-     }
-
-      // int srd[dev->MaxY][dev->MaxX];
-      // for (i = 0; i < dev->MaxY; i++)
-      // {
-      //   for (j = 0; j < dev->MaxX; j++)
-      //   {
-      //     srd[i][j] = 0;
-      //   }
-      // }
-
-      // int y_offset = port->ymax - pd2->y; // viewport - pontoy_max
-      // printf("%d offset\n", y_offset);
-      // j = pd1->y - y_offset;
-      // i = pd1->x;
-      // srd[j][i] = color;
-      // printf("(%d, %d) index = %d\n", i, j, j*x+i);
-      // i = pd2->x;
-      // j = pd1->y - y_offset;
-      // srd[j][i] = color;
-      // printf("(%d, %d) index = %d\n", i, j, j*x+i);
-
-      // x = dev->MaxX, y = dev->MaxY;
-      // index = 0;
-      // for (j = 0; j < y; j++)
-      // {
-      //   for (i = 0; i < x; i++)
-      //   {
-      //     if (srd[j][i] == color)
-      //     {
-      //       // dev->buffer[index] = color;
-      //       printf("(%d, %d) -> %d\n", i, j, index);
-      //     }
-      //     index++;
-      //   }
-      // }
-      // printf("*********************************\n");
-      // printf("p1=(%f, %f) -> pn1=(%f, %f) -> pd1=(%f, %f)\n",
-      //        p1->x, p1->y, pn1->x, pn1->y, pd1->x, pd1->y);
-      // printf("p2=(%f, %f) -> pn2=(%f, %f) -> pd2=(%f, %f)\n",
-      //        p2->x, p2->y, pn2->x, pn2->y, pd2->x, pd2->y);
-
+          if (j > aux)
+          {
+            while (aux < j)
+            {
+              dev->buffer[(dev->MaxY - aux - 1) * dev->MaxX + i] = color;
+              aux++;
+            }
+          }
+          if (j < aux)
+          {
+            while (aux > j)
+            {
+              dev->buffer[(dev->MaxY - aux - 1) * dev->MaxX + i] = color;
+              aux--;
+            }
+          }
+        }
+      }
     }
-  }
 
-  return 0;
+    return 0;
+  }
 }
