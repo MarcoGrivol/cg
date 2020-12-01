@@ -31,7 +31,7 @@ int DrawLine(point *p1, point *p2, window *win, viewport *port, bufferdevice *de
   // Agora é com vocês! Completem a função! O resultado deve ser similar ao encontrado quando o programa exemplo1,
   // que está disponível na seção Biblioteca Gráfica, é executado.
   int index;
-  float step = 0.5;
+  float step = 0.05;
   if (pd1->x == pd2->x) // linha vertical
   {
     i = pd1->x;
@@ -41,7 +41,7 @@ int DrawLine(point *p1, point *p2, window *win, viewport *port, bufferdevice *de
       for (int k = pd1->y; k < pd2->y; k++)
       {
         j = k;
-        index = (dev->MaxY - j - 1) * dev->MaxX + i;
+        index = (dev->MaxY - j) * dev->MaxX + i;
         dev->buffer[index] = color;
       }
     }
@@ -50,7 +50,7 @@ int DrawLine(point *p1, point *p2, window *win, viewport *port, bufferdevice *de
       for (int k = pd2->y; k < pd1->y; k++)
       {
         j = k;
-        index = (dev->MaxY - j - 1) * dev->MaxX + i;
+        index = (dev->MaxY - j) * dev->MaxX + (i);
         dev->buffer[index] = color;
       }
     }
@@ -63,7 +63,7 @@ int DrawLine(point *p1, point *p2, window *win, viewport *port, bufferdevice *de
     {
       j = a * k + b;
       i = k;
-      index = (dev->MaxY - j - 1) * dev->MaxX + i;
+      index = (dev->MaxY - j) * dev->MaxX + i;
       dev->buffer[index] = color;
     }
   }
