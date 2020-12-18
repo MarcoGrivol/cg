@@ -1,0 +1,19 @@
+
+Atividade de reposição.
+
+Para executar os exemplos, deve-se ter a biblioteca X-Window instalada e o código objeto bibaux_at.o.
+
+O código foi escrito para ser compilado em uma distribuição Linux (64 bits).
+
+Nesse momento, está sendo disponibilizado o código objeto bibaux_at.o, que esconde, de forma proposital, parte da biblioteca.
+
+O exemplo de testes é o código at_rep.c.
+
+Para compilar e estudar os exemplos, execute (em um Shell):
+
+gcc -c line.c  --> a rotina de prenchimento deve ser escrita no fonte line.c logo abaixo da DrawLine()
+gcc -c cg2d.c
+gcc at_rep.c -o at_rep cg2d.o line.o bibaux_at.o -lm -lX11
+./at_rep
+
+
