@@ -92,7 +92,63 @@ int SetObject3D(face *fc, object3d *ob)
 	return 0;
 }
 
-matrix3d *SetRotMatrix3D(float theta)
+matrix3d *SetXRotMatrix3D(float theta)
+{
+	matrix3d *m;
+	m = (matrix3d *)malloc(sizeof(matrix3d));
+
+	m->a11 = 1.0;     
+	m->a12 = 0.0;    
+	m->a13 = 0.0;
+	m->a14 = 0.0;
+
+	m->a21 = 0.0;
+	m->a22 = cos((theta * M_PI) / 180.0);
+	m->a23 = (-1.0) * sin((theta * M_PI) / 180.0);
+	m->a24 = 0.0;
+
+	m->a31 = 0.0;
+	m->a32 = sin((theta * M_PI) / 180.0);
+	m->a33 = cos((theta * M_PI) / 180.0);
+	m->a34 = 0.0;
+
+	m->a41 = 0.0;
+	m->a42 = 0.0;
+	m->a43 = 0.0;
+	m->a44 = 1.0;
+
+	return m;
+}
+
+matrix3d *SetYRotMatrix3D(float theta)
+{
+	matrix3d *m;
+	m = (matrix3d *)malloc(sizeof(matrix3d));
+
+	m->a11 = cos((theta * M_PI) / 180.0); 
+	m->a12 = 0.0;    
+	m->a13 = sin((theta * M_PI) / 180.0);
+	m->a14 = 0.0;
+
+	m->a21 = 0.0;
+	m->a22 = 1.0;
+	m->a23 = 0.0;
+	m->a24 = 0.0;
+
+	m->a31 = 0.0;
+	m->a32 = (-1.0) * sin((theta * M_PI) / 180.0);
+	m->a33 = 0.0;
+	m->a34 = cos((theta * M_PI) / 180.0);
+
+	m->a41 = 0.0;
+	m->a42 = 0.0;
+	m->a43 = 0.0;
+	m->a44 = 1.0;
+
+	return m;
+}
+
+matrix3d *SetZRotMatrix3D(float theta)
 {
 	matrix3d *m;
 	m = (matrix3d *)malloc(sizeof(matrix3d));
@@ -128,6 +184,19 @@ matrix3d *SetSftMatrix3D(float dx, float dy, float dz)
 	m->a11 = 1.0; m->a12 = 0.0;	m->a13 = 0.0; m->a14 = dx;
 	m->a21 = 0.0; m->a22 = 1.0;	m->a23 = 0.0; m->a24 = dy;
 	m->a31 = 0.0; m->a32 = 0.0; m->a33 = 1.0; m->a34 = dz;
+	m->a41 = 0.0; m->a42 = 0.0; m->a43 = 0.0; m->a44 = 1.0;
+
+	return m;
+}
+
+matrix3d *SetSclMatrix3D(float sx, float sy, float sz)
+{
+	matrix3d *m;
+	m = (matrix3d *)malloc(sizeof(matrix3d));
+
+	m->a11 = sx;  m->a12 = 0.0;	m->a13 = 0.0; m->a14 = 0.0;
+	m->a21 = 0.0; m->a22 = sy;	m->a23 = 0.0; m->a24 = 0.0;
+	m->a31 = 0.0; m->a32 = 0.0; m->a33 = sz;  m->a34 = 0.0;
 	m->a41 = 0.0; m->a42 = 0.0; m->a43 = 0.0; m->a44 = 1.0;
 
 	return m;
@@ -190,6 +259,16 @@ object *ParalProjFaces(object3d *ob3d)
 	object *facelist;
 	int numbers_of_points, numbers_of_faces;
 
+	matrix3d *m;
+	m = (matrix3d *)malloc(sizeof(matrix3d));
+
+	m->a11 = 1.0; m->a12 = 0.0; m->a13 = 0.0; m->a14 = 0.0;
+	m->a21 = 0.0; m->a22 = 1.0;	m->a23 = 0.0; m->a24 = 0.0;
+	m->a31 = 0.0; m->a32 = 0.0; m->a33 = 0.0; m->a34 = 0.0;
+	m->a41 = 0.0; m->a42 = 0.0; m->a43 = 0.0; m->a44 = 1.0;
+
+	ob3d = ConvertObjectBase(m, ob3d);
+
 	facelist = (object *)malloc(ob3d->numbers_of_faces * sizeof(object));
 	for (numbers_of_faces = 0; numbers_of_faces < ob3d->numbers_of_faces; numbers_of_faces++)
 	{
@@ -199,7 +278,7 @@ object *ParalProjFaces(object3d *ob3d)
 		{
 			facelist[numbers_of_faces].points[numbers_of_points].x = ob3d->faces[numbers_of_faces].points[numbers_of_points].x;
 			facelist[numbers_of_faces].points[numbers_of_points].y = ob3d->faces[numbers_of_faces].points[numbers_of_points].y;
-			facelist[numbers_of_faces].points[numbers_of_points].w = 1;
+			facelist[numbers_of_faces].points[numbers_of_points].w = ob3d->faces[numbers_of_faces].points[numbers_of_points].w;
 			facelist[numbers_of_faces].points[numbers_of_points].color = ob3d->faces[numbers_of_faces].points[numbers_of_points].color;
 		}
 	}
@@ -207,10 +286,34 @@ object *ParalProjFaces(object3d *ob3d)
 	return facelist;
 }
 
+matrix3d *SetPerspProjMatrix(float z, float zpp, float zcp)
+{
+	matrix3d *m;
+	m = (matrix3d *)malloc(sizeof(matrix3d));
+
+	// m->a11 = (zpp - zcp)/(z - zcp); m->a12 = 0.0;	                m->a13 = 0.0; m->a14 = 0.0;
+	// m->a21 = 0.0;                   m->a22 = (zpp - zcp)/(z - zcp);	m->a23 = 0.0; m->a24 = 0.0;
+	// m->a31 = 0.0;                   m->a32 = 0.0;                   m->a33 = 0.0; m->a34 = 0.0;
+	// m->a41 = 0.0;                   m->a42 = 0.0;                   m->a43 = 0.0; m->a44 = 1.0;
+
+	m->a11 = 1.0; m->a12 = 0.0;	              m->a13 = 0.0;                      m->a14 = 0.0;
+	m->a21 = 0.0; m->a22 = 1.0;	              m->a23 = 0.0;                      m->a24 = 0.0;
+	m->a31 = 0.0; m->a32 = zpp/(zpp - zcp);   m->a33 = (-zpp * zcp)/(zpp - zcp); m->a34 = 0.0;
+	m->a41 = 0.0; m->a42 = 0.0;               m->a43 = 1/(zpp - zcp);            m->a44 = -zcp/(zpp - zcp);
+
+	return m;
+}
+
 object *PerspProjFaces(object3d *ob3d, float zpp, float zcp)
 {
 	object *facelist;
 	int numbers_of_points, numbers_of_faces;
+
+	matrix3d *m;
+	m = (matrix3d *)malloc(sizeof(matrix3d));
+
+	point3d *p;
+	p = (point3d *)malloc(sizeof(point3d));
 
 	facelist = (object *)malloc(ob3d->numbers_of_faces * sizeof(object));
 	for (numbers_of_faces = 0; numbers_of_faces < ob3d->numbers_of_faces; numbers_of_faces++)
@@ -219,10 +322,17 @@ object *PerspProjFaces(object3d *ob3d, float zpp, float zcp)
 		facelist[numbers_of_faces].points = (point *)malloc(facelist[numbers_of_faces].numbers_of_points * sizeof(point));
 		for (numbers_of_points = 0; numbers_of_points < ob3d->faces[numbers_of_faces].numbers_of_points; numbers_of_points++)
 		{
-			facelist[numbers_of_faces].points[numbers_of_points].x = ((ob3d->faces[numbers_of_faces].points[numbers_of_points].x) * (zpp - zcp)) / (ob3d->faces[numbers_of_faces].points[numbers_of_points].z - zcp);
-			facelist[numbers_of_faces].points[numbers_of_points].y = ((ob3d->faces[numbers_of_faces].points[numbers_of_points].y) * (zpp - zcp)) / (ob3d->faces[numbers_of_faces].points[numbers_of_points].z - zcp);
-			facelist[numbers_of_faces].points[numbers_of_points].w = 1;
-			facelist[numbers_of_faces].points[numbers_of_points].color = ob3d->faces[numbers_of_faces].points[numbers_of_points].color;
+			p->x = ob3d->faces[numbers_of_faces].points[numbers_of_points].x;
+			p->y = ob3d->faces[numbers_of_faces].points[numbers_of_points].y;
+			p->z = ob3d->faces[numbers_of_faces].points[numbers_of_points].z;
+			p->w = ob3d->faces[numbers_of_faces].points[numbers_of_points].w;
+			p->color = ob3d->faces[numbers_of_faces].points[numbers_of_points].color;
+			m = SetPerspProjMatrix(p->z, zpp, zcp);
+			p = LinearTransf3d(m, p);
+			facelist[numbers_of_faces].points[numbers_of_points].x = p->x / p->w;
+			facelist[numbers_of_faces].points[numbers_of_points].y = p->y / p->w;
+			facelist[numbers_of_faces].points[numbers_of_points].w = p->w;
+			facelist[numbers_of_faces].points[numbers_of_points].color = p->color;
 		}
 	}
 
