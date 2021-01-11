@@ -56,7 +56,7 @@ matrix3d *SetYRotMatrix3D(float);
 matrix3d *SetZRotMatrix3D(float);
 matrix3d *SetSftMatrix3D(float, float, float);
 matrix3d *SetSclMatrix3D(float, float, float);
-bufferdevice *ZBuffer( object3d* faces, bufferdevice dev );
-
+matrix3d *SetParalProjMatrix();
+matrix3d *SetPerspProjMatrix(float, float);
 
 
