@@ -1,6 +1,3 @@
-// Aluno: Marco Antonio Bernardi Grivol
-// RA: 758619
-
 #include "cg2d.h"
 
 #define n 12
